@@ -34,7 +34,34 @@ const getBlogDetail = (id) => {
     return blogDetail;
 }
 
+// 创建博客
+const createBlogArticle = (blogData = {}) => {
+    console.log(blogData, '===create===');
+    return {
+        id: 3,
+    }
+}
+
+// 更新博客
+const updateBlogArticle = (id, blogData = {}) => {
+    console.log(blogData, '===update===');
+    return {
+        id: 3,
+    }
+}
+
+// 删除博客
+const deleteBlogArticle = (id, blogData = {}) => {
+    console.log(blogData, '===delete===');
+    return {
+        id: 3,
+    }
+}
+
 module.exports = {
     getBlogList,
-    getBlogDetail
+    getBlogDetail,
+    createBlogArticle,
+    updateBlogArticle,
+    deleteBlogArticle
 }
