@@ -4,9 +4,9 @@ const {
     createBlogArticle,
     updateBlogArticle,
     deleteBlogArticle,
-} = require('../../controller/blog');
+} = require('../../controller/blog/blog');
 
-const { ErrorModel, SuccessModel } = require('../../model/resModel');
+const { ErrorModel, SuccessModel } = require('../../model/blogResModel');
 
 const handlerBlogRouter = (req, res) => {
     const method = req.method;
@@ -44,7 +44,7 @@ const handlerBlogRouter = (req, res) => {
 
     // 删除博客接口
     if (method === 'POST' && req.path === '/api/blog/delete') {
-        const data = deleteBlogArticle(id, req.body);
+        const data = deleteBlogArticle(id);
         if (data) {
             return new SuccessModel(data);
         } else {

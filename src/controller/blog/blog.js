@@ -43,6 +43,7 @@ const createBlogArticle = (blogData = {}) => {
 }
 
 // 更新博客
+// ?id=3&content=内容1&title=标题1&createTime=1709370626290&author=Jack
 const updateBlogArticle = (id, blogData = {}) => {
     console.log(blogData, '===update===');
     return {
@@ -51,8 +52,8 @@ const updateBlogArticle = (id, blogData = {}) => {
 }
 
 // 删除博客
-const deleteBlogArticle = (id, blogData = {}) => {
-    console.log(blogData, '===delete===');
+const deleteBlogArticle = (id) => {
+    console.log(id, '===delete===');
     return {
         id: 3,
     }
