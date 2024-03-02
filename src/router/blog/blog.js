@@ -1,18 +1,26 @@
+const { 
+    getBlogList, 
+    getBlogDetail 
+} = require('../../controller/blog');
+
+const { ErrorModel, SuccessModel } = require('../../model/resModel');
+
 const handlerBlogRouter = (req, res) => {
     const method = req.method;
 
     // 获取博客列表
     if (method === 'GET' && req.path === '/api/blog/list') {
-        return {
-            msg: '获取博客列表接口'
-        }
+        const author = req.query.author || '';
+        const keyword = req.query.keyword || '';
+        const list = getBlogList(author, keyword);
+        return new SuccessModel(list);
     }
 
     // 获取博客详情
     if (method === 'GET' && req.path === '/api/blog/detail') {
-        return {
-            msg: '获取博客详情接口'
-        }
+        const id = req.query.id;
+        const blogDetail = getBlogDetail(id);
+        return new SuccessModel(blogDetail);
     }
 
     // 创建博客文章
@@ -29,14 +37,12 @@ const handlerBlogRouter = (req, res) => {
         }
     }
 
-
     // 删除博客接口
     if (method === 'POST' && req.path === '/api/blog/delete') {
         return {
             msg: '删除博客文章接口'
         }
     }
-
 }
 
 module.exports = handlerBlogRouter;
