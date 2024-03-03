@@ -35,7 +35,10 @@ const createBlogArticle = (blogData = {}) => {
     let sql = `insert into bloglist (title, content, createTime, author) values ('${title}', '${content}', ${createTime}, '${author}')`
 
     return exec(sql).then(res => {
-        return true;
+        if (res.affectedRows > 0) {
+            return true;
+        }
+        return false;
     })
 }
 

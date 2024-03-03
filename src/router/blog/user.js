@@ -1,7 +1,6 @@
 const { loginCheck, registerCheck } = require('../../controller/blog/user')
 const { ErrorModel, SuccessModel } = require('../../model/blogResModel');
 
-
 const handlerUserRouter = (req, res) => {
     const method = req.method; // GET POST
     
@@ -9,23 +8,21 @@ const handlerUserRouter = (req, res) => {
     if (method === 'POST' && req.path === '/api/user/login') {
         const { username, password } = req.body;
         const data = loginCheck(username, password);
-
-        if (data) {
-            return new SuccessModel
-        } 
-
-        return new ErrorModel('登录失败');
+        return data.then((user) => {
+            if (user.username) {
+                return new SuccessModel();
+            } 
+            return new ErrorModel('登录失败');
+        });
     }
 
-    // 注册
+    // 注册add
     if (method === 'POST' && req.path === '/api/user/register') {
-        const { username, password } = req.body;
-        const data = registerCheck(username, password);
-
-        if (data) {
-            return new SuccessModel
-        } 
-         return new ErrorModel('注册失败');
+        const { username, password, realname, status } = req.body;
+        const data = registerCheck(username, password, realname, status);
+        return data.then((user) => {
+            return new SuccessModel(user);
+        });
     }
 
 }

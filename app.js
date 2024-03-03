@@ -62,9 +62,11 @@ const serverHandler = (req, res) => {
         }
 
         // 处理用户信息路由
-        const userData = handlerUserRouter(req, res);
-        if (userData) {
-            res.end(JSON.stringify(userData))
+        const userResult = handlerUserRouter(req, res);
+        if (userResult) {
+            userResult.then(result => {
+                res.end(JSON.stringify(result))
+            });
             return
         }
 
