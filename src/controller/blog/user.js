@@ -1,5 +1,5 @@
 const { exec } = require('../../db/mysql');
-const loginCheck = (username, password) => {
+const login = (username, password) => {
     // 假数据使用
     let sql = `select username, realname from bloguser where username='${username}' and password='${password}'`
     return exec(sql).then((rows) => {
@@ -19,6 +19,6 @@ const registerCheck = (username, password, realname, status) => {
 }
 
 module.exports = {
-    loginCheck,
+    login,
     registerCheck,
 }
