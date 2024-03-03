@@ -20,40 +20,47 @@ const getBlogList = (author, keyword) => {
 
 // 获取单个详情
 const getBlogDetail = (id) => {
-    const blogDetail = {
-        id: 1,
-        title: '标题1',
-        content: '内容1',
-        createTime: 1709370624290,
-        author: 'John'
-    }
-
-    return blogDetail;
+    let sql = `select * from bloglist where id='${id}'`
+    return exec(sql).then(res => {
+        return res[0];
+    })
 }
 
 // 创建博客
 const createBlogArticle = (blogData = {}) => {
     console.log(blogData, '===create===');
-    return {
-        id: 3,
-    }
+    const { title, content, author } = blogData;
+    const createTime = Date.now();
+
+    let sql = `insert into bloglist (title, content, createTime, author) values ('${title}', '${content}', ${createTime}, '${author}')`
+
+    return exec(sql).then(res => {
+        return true;
+    })
 }
 
 // 更新博客
 // ?id=3&content=内容1&title=标题1&createTime=1709370626290&author=Jack
 const updateBlogArticle = (id, blogData = {}) => {
-    console.log(blogData, '===update===');
-    return {
-        id: 3,
-    }
+    const { title, content } = blogData;
+    let sql = `update bloglist set title='${title}', content='${content}' where id=${id} ;`
+    return exec(sql).then(res => {
+        if (res.affectedRows > 0) {
+            return true;
+        }
+        return false;
+    });
 }
 
 // 删除博客
-const deleteBlogArticle = (id) => {
-    console.log(id, '===delete===');
-    return {
-        id: 3,
-    }
+const deleteBlogArticle = (id, author) => {
+    let sql = `delete from bloglist where id=${id} and author='${author}';`
+    return exec(sql).then(res => {
+        if (res.affectedRows > 0) {
+            return true;
+        }
+        return false;
+    });
 }
 
 module.exports = {

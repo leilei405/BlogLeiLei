@@ -21,16 +21,20 @@ class BaseModel {
 class SuccessModel extends BaseModel {
     constructor(data, message) {
         super(data, message);
+        console.log(message, '===Success===');
+        this.message = message;
         this.success = true;
-        this.code = 0;
+        this.errCode = 0;
     }
 }
 
 class ErrorModel extends BaseModel {
     constructor(data, message) {
         super(data, message);
+        console.log(message, '===Error===');
+        this.message = message;
         this.success = false;
-        this.code = -1;
+        this.errCode = -1;
     }
 }
 
