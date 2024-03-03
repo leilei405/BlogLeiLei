@@ -1,24 +1,21 @@
+const { exec } = require('../../db/mysql');
+
 // 获取博客列表
 const getBlogList = (author, keyword) => {
-    // 先返回假数据
-    const blogList = [
-        {
-            id: 1,
-            title: '标题1',
-            content: '内容1',
-            createTime: 1709370624290,
-            author: 'John'
-        },
-        {
-            id: 2,
-            title: '标题2',
-            content: '内容2',
-            createTime: 1709370626290,
-            author: 'Jack'
-        },
-    ];
+    // 受限定义一个sql语句
+    let sql = 'select * from bloglist where 1 = 1 '
 
-    return blogList;
+    if (author) {
+        sql += `and author='${author}'`
+    }
+
+    if (keyword) {
+        sql += `and title like '%${keyword}%'`
+    }
+
+    sql += `order by createTime desc;`
+
+    return exec(sql);
 }
 
 // 获取单个详情
