@@ -65,13 +65,14 @@
                 return
             }
 
-            const url = '/api/blog/new'
+            const url = '/api/blog/create'
             const data = {
                 title,
                 content
             }
+            console.log(data, '===data===');
             post(url, data).then(res => {
-                if (res.errno !== 0) {
+                if (res.errCode !== 0) {
                     alert('操作错误')
                     return
                 }
