@@ -17,7 +17,6 @@ const exec = (sql) => {
         return;
       }
       if (data) {
-        console.log(data, "===data===");
         resolve(data);
       }
     });

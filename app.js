@@ -48,7 +48,7 @@ const serverHandler = (req, res) => {
 
   // 解析cookie
   req.cookie = {};
-  const cookieStr = req.headers.cookie || "";
+  const cookieStr = req.headers.cookie || ""; // 键值对数据格式'name=fll;age=18'
   cookieStr.split(";").forEach((item) => {
     if (!item) return;
     const arr = item.split("=");
@@ -56,6 +56,7 @@ const serverHandler = (req, res) => {
     const val = arr[1].trim();
     req.cookie[key] = val;
   });
+  console.log(req.cookie, "===reqCookie===");
 
   // 处理post data
   getPostData(req).then((postData) => {

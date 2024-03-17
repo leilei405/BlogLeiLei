@@ -20,7 +20,6 @@ class BaseModel {
 class SuccessModel extends BaseModel {
   constructor(data, message) {
     super(data, message);
-    console.log(message, "===Success===");
     this.message = message;
     this.success = true;
     this.errCode = 0;
@@ -30,7 +29,6 @@ class SuccessModel extends BaseModel {
 class ErrorModel extends BaseModel {
   constructor(data, message) {
     super(data, message);
-    console.log(message, "===Error===");
     this.message = message;
     this.success = false;
     this.errCode = -1;
