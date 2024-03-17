@@ -1,14 +1,6 @@
 const { login, registerCheck } = require("../../controller/blog/user");
 const { ErrorModel, SuccessModel } = require("../../model/blogResModel");
 
-// 获取cookie的过期时间
-const getCookieExpires = () => {
-  const d = new Date();
-  d.setTime(d.getTime() + 24 * 60 * 60 * 1000);
-  console.log(d.toGMTString(), "====d.toGMTString()===");
-  return d.toGMTString();
-};
-
 const handlerUserRouter = (req, res) => {
   const method = req.method; // GET POST
 
@@ -22,6 +14,7 @@ const handlerUserRouter = (req, res) => {
         // 设置Session
         req.session.username = user.username;
         req.session.realname = user.realname;
+        console.log(req.session, "session");
         return new SuccessModel();
       }
       return new ErrorModel("登录失败");
@@ -33,7 +26,7 @@ const handlerUserRouter = (req, res) => {
     if (req.session.username) {
       return Promise.resolve(
         new SuccessModel({
-          session: req.session.username,
+          session: req.session,
         })
       );
     }

@@ -7,6 +7,14 @@ const handlerQuestionManagerRouter = require("./src/router/question/questionmana
 // session 数据
 const SESSION_DATA = {};
 
+// 获取cookie的过期时间
+const getCookieExpires = () => {
+  const d = new Date();
+  d.setTime(d.getTime() + 24 * 60 * 60 * 1000);
+  console.log(d.toGMTString(), "====d.toGMTString()===");
+  return d.toGMTString();
+};
+
 // 用于处理post data
 const getPostData = (req) => {
   const promise = new Promise((resolve, reject) => {
@@ -62,7 +70,7 @@ const serverHandler = (req, res) => {
 
   // 解析session
   let needSetCookie = false;
-  const userId = req.cookie.userId || "";
+  let userId = req.cookie.userId;
   if (userId) {
     if (!SESSION_DATA[userId]) {
       SESSION_DATA[userId] = {};
