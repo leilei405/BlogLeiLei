@@ -4,6 +4,9 @@ const handlerUserRouter = require("./src/router/blog/user"); // 博客用户信�
 const handlerQuestionUserRouter = require("./src/router/question/questionuser"); // 问卷用户信息
 const handlerQuestionManagerRouter = require("./src/router/question/questionmanage"); // 问卷调查信息
 
+// session 数据
+const SESSION_DATA = {};
+
 // 用于处理post data
 const getPostData = (req) => {
   const promise = new Promise((resolve, reject) => {
@@ -56,7 +59,20 @@ const serverHandler = (req, res) => {
     const val = arr[1].trim();
     req.cookie[key] = val;
   });
-  console.log(req.cookie, "===reqCookie===");
+
+  // 解析session
+  let needSetCookie = false;
+  const userId = req.cookie.userId || "";
+  if (userId) {
+    if (!SESSION_DATA[userId]) {
+      SESSION_DATA[userId] = {};
+    }
+  } else {
+    needSetCookie = true;
+    userId = `${Date.now()}_${Math.random()}`;
+    SESSION_DATA[userId] = {};
+  }
+  req.session = SESSION_DATA[userId];
 
   // 处理post data
   getPostData(req).then((postData) => {
@@ -66,6 +82,12 @@ const serverHandler = (req, res) => {
     const blogResult = handlerBlogRouter(req, res);
     if (blogResult) {
       blogResult.then((result) => {
+        if (needSetCookie) {
+          res.setHeader(
+            "Set-Cookie",
+            `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}` // httpOnly
+          );
+        }
         res.end(JSON.stringify(result));
       });
       return;
@@ -75,6 +97,12 @@ const serverHandler = (req, res) => {
     const userResult = handlerUserRouter(req, res);
     if (userResult) {
       userResult.then((result) => {
+        if (needSetCookie) {
+          res.setHeader(
+            "Set-Cookie",
+            `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}` // httpOnly
+          );
+        }
         res.end(JSON.stringify(result));
       });
       return;
