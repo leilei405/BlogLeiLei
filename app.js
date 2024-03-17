@@ -3,9 +3,10 @@ const handlerBlogRouter = require("./src/router/blog/blog"); // 博客文章
 const handlerUserRouter = require("./src/router/blog/user"); // 博客用户信息
 const handlerQuestionUserRouter = require("./src/router/question/questionuser"); // 问卷用户信息
 const handlerQuestionManagerRouter = require("./src/router/question/questionmanage"); // 问卷调查信息
+const { get, set } = require("./src/db/redis");
 
 // session 数据
-const SESSION_DATA = {};
+// const SESSION_DATA = {};
 
 // 获取cookie的过期时间
 const getCookieExpires = () => {
@@ -69,72 +70,98 @@ const serverHandler = (req, res) => {
   });
 
   // 解析session
+  //   let needSetCookie = false;
+  //   let userId = req.cookie.userId;
+  //   if (userId) {
+  //     if (!SESSION_DATA[userId]) {
+  //       SESSION_DATA[userId] = {};
+  //     }
+  //   } else {
+  //     needSetCookie = true;
+  //     userId = `${Date.now()}_${Math.random()}`;
+  //     SESSION_DATA[userId] = {};
+  //   }
+  //   req.session = SESSION_DATA[userId];
+
+  // 使用redis解析session
   let needSetCookie = false;
   let userId = req.cookie.userId;
-  if (userId) {
-    if (!SESSION_DATA[userId]) {
-      SESSION_DATA[userId] = {};
-    }
-  } else {
+  if (!userId) {
     needSetCookie = true;
     userId = `${Date.now()}_${Math.random()}`;
-    SESSION_DATA[userId] = {};
+    // 初始化session
+    set(userId, {});
   }
-  req.session = SESSION_DATA[userId];
+  // 获取session
+  req.sessionId = userId;
+  get(req.sessionId)
+    .then((sessionData) => {
+      if (sessionData == null) {
+        // 初始化redis中的session值
+        set(req.sessionId, {});
+        // 设置session
+        req.session = {};
+      } else {
+        // 设置session
+        req.session = sessionData;
+      }
+      console.log(req.session, "====req.session===");
 
-  // 处理post data
-  getPostData(req).then((postData) => {
-    req.body = postData;
+      // 处理post Data
+      return getPostData(req);
+    })
+    .then((postData) => {
+      req.body = postData;
 
-    // 处理博客路由
-    const blogResult = handlerBlogRouter(req, res);
-    if (blogResult) {
-      blogResult.then((result) => {
-        if (needSetCookie) {
-          res.setHeader(
-            "Set-Cookie",
-            `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}` // httpOnly
-          );
-        }
-        res.end(JSON.stringify(result));
-      });
-      return;
-    }
+      // 处理博客路由
+      const blogResult = handlerBlogRouter(req, res);
+      if (blogResult) {
+        blogResult.then((result) => {
+          if (needSetCookie) {
+            res.setHeader(
+              "Set-Cookie",
+              `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}` // httpOnly
+            );
+          }
+          res.end(JSON.stringify(result));
+        });
+        return;
+      }
 
-    // 处理用户信息路由
-    const userResult = handlerUserRouter(req, res);
-    if (userResult) {
-      userResult.then((result) => {
-        if (needSetCookie) {
-          res.setHeader(
-            "Set-Cookie",
-            `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}` // httpOnly
-          );
-        }
-        res.end(JSON.stringify(result));
-      });
-      return;
-    }
+      // 处理用户信息路由
+      const userResult = handlerUserRouter(req, res);
+      if (userResult) {
+        userResult.then((result) => {
+          if (needSetCookie) {
+            res.setHeader(
+              "Set-Cookie",
+              `userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}` // httpOnly
+            );
+          }
+          res.end(JSON.stringify(result));
+        });
+        return;
+      }
 
-    // 处理问卷用户信息
-    const questionInfoData = handlerQuestionUserRouter(req, res);
-    if (questionInfoData) {
-      res.end(JSON.stringify(questionInfoData));
-      return;
-    }
+      // 处理问卷用户信息
+      const questionInfoData = handlerQuestionUserRouter(req, res);
+      if (questionInfoData) {
+        res.end(JSON.stringify(questionInfoData));
+        return;
+      }
 
-    // 处理问卷调查信息
-    const questionManageData = handlerQuestionManagerRouter(req, res);
-    if (questionManageData) {
-      res.end(JSON.stringify(questionManageData));
-      return;
-    }
+      // 处理问卷调查信息
+      const questionManageData = handlerQuestionManagerRouter(req, res);
+      if (questionManageData) {
+        res.end(JSON.stringify(questionManageData));
+        return;
+      }
 
-    // 未命中路由
-    res.writeHead(404, { "Content-Type": "text/plain" });
-    res.write("404 Not Found\n");
-    res.end();
-  });
+      // 未命中路由
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.write("404 Not Found\n");
+      res.end();
+    });
 };
 
 module.exports = serverHandler;
