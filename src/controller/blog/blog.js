@@ -1,4 +1,4 @@
-const { exec } = require("../../db/mysql");
+const { exec, escape } = require("../../db/mysql");
 
 // 获取博客列表
 const getBlogList = (author, keyword) => {
@@ -6,11 +6,13 @@ const getBlogList = (author, keyword) => {
   let sql = "select * from bloglist where 1 = 1 ";
 
   if (author) {
-    sql += `and author='${author}'`;
+    author = escape(author);
+    sql += `and author=${author}`;
   }
 
   if (keyword) {
-    sql += `and title like '%${keyword}%'`;
+    keyword = escape(keyword);
+    sql += `and title like %${keyword}%`;
   }
 
   sql += `order by createTime desc;`;
@@ -20,7 +22,8 @@ const getBlogList = (author, keyword) => {
 
 // 获取单个详情
 const getBlogDetail = (id) => {
-  let sql = `select * from bloglist where id='${id}'`;
+  id = escape(id);
+  let sql = `select * from bloglist where id=${id}`;
   return exec(sql).then((res) => {
     return res[0];
   });
@@ -31,8 +34,11 @@ const createBlogArticle = (blogData = {}) => {
   console.log(blogData, "===create===");
   const { title, content, author } = blogData;
   const createTime = Date.now();
+  title = escape(title);
+  content = escape(content);
+  author = escape(author);
 
-  let sql = `insert into bloglist (title, content, createTime, author) values ('${title}', '${content}', ${createTime}, '${author}')`;
+  let sql = `insert into bloglist (title, content, createTime, author) values (${title}, ${content}, ${createTime}, ${author})`;
 
   return exec(sql).then((res) => {
     if (res.affectedRows > 0) {
