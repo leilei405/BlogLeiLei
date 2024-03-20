@@ -39,3 +39,6 @@ GET--/api/blog/detail?id=16--Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebK
 POST--/api/blog/update?id=16--Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.361710948421882
 GET--/api/blog/detail?id=16--Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.361710948444391
 POST--/api/blog/update?id=16--Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.361710948448850
+GET--/api/blog/list?isadmin=1--Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.361710948558375
+POST--/api/blog/del?id=11--Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.361710948562550
+GET--/api/blog/list?isadmin=1--Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.361710948576601
